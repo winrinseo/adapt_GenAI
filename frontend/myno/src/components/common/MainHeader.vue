@@ -4,7 +4,11 @@
       <div class="main-header-left">
         <div class="dark-logo-wrapper">
           <a href="index.html" data-bs-original-title="" title=""
-            ><img class="img-fluid" :src="$logoUrl" alt=""
+            ><img
+              class="img-fluid"
+              :src="$logoUrl"
+              alt=""
+              style="width: 70%; height: 70%"
           /></a>
         </div>
         <div class="toggle-sidebar">
