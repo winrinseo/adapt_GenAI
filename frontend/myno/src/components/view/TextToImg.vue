@@ -6,6 +6,21 @@
         <div class="card">
           <div class="card-header pb-0"></div>
           <div class="card-body p-4">
+            <select
+              v-model="selectedTag"
+              name="basic-1_length"
+              aria-controls="basic-1"
+              class=""
+              @change="changeSelect"
+            >
+              <option
+                v-for="(item, index) in this.$store.state.menu"
+                :key="index"
+                :value="item.value"
+              >
+                {{ item.name }}
+              </option>
+            </select>
             <div>
               <label class="form-label" style="color: #ffffff"
                 >추가할 태그</label
@@ -55,6 +70,11 @@ export default {
     return {
       includeTag: "",
       excludeTag: "",
+      selectedTag: "",
+
+      positivePrompt: "",
+      negativePrompt: "",
+
       responsed: false,
       responseImg: "",
     };
@@ -69,10 +89,12 @@ export default {
       this.excludeTag = "";
     },
     async sendTxt() {
-      var tag = this.selectedTag + " " + this.includeTag;
+      var positive = this.positivePrompt + " " + this.includeTag;
+      var negative = this.negativePrompt + " " + this.excludeTag;
 
       const param = {
-        prompt: tag,
+        prompt: positive,
+        negative_prompt: negative,
       };
       txt2img(
         param,
@@ -84,6 +106,15 @@ export default {
           console.error(error);
         }
       );
+    },
+    changeSelect() {
+      if (this.selectedTag == "") {
+        this.positivePrompt = "";
+        this.negativePrompt = "";
+        return;
+      }
+      this.positivePrompt = this.$store.state.positivePrompt[this.selectedTag];
+      this.negativePrompt = this.$store.state.negativePrompt[this.selectedTag];
     },
   },
 };
