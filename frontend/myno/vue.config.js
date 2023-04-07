@@ -3,8 +3,8 @@ module.exports = defineConfig({
   transpileDependencies: true,
   outputDir: "C:/git-rep/mynobuild",
   devServer: {
-    proxy : 'http://127.0.0.1:7860'
-  }
+    proxy: "http://127.0.0.1:7860",
+  },
 });
 
 // module.exports = {

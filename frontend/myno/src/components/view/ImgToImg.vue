@@ -29,6 +29,7 @@
                   name="basic-1_length"
                   aria-controls="basic-1"
                   class=""
+                  @change="changeSelect"
                 >
                   <option
                     v-for="(item, index) in this.$store.state.menu"
@@ -44,7 +45,17 @@
                     class="form-control"
                     rows="5"
                     placeholder="Enter About your description"
-                    v-model="includeTag"
+                    v-model="includePositivePrompt"
+                  ></textarea>
+                </div>
+
+                <div style="margin-top: 10px">
+                  <p>제외하고싶은 태그가 있다면 입력해주세요</p>
+                  <textarea
+                    class="form-control"
+                    rows="5"
+                    placeholder="Enter About your description"
+                    v-model="includeNegativePrompt"
                   ></textarea>
                 </div>
               </div>
@@ -79,7 +90,12 @@ export default {
       fileList: [],
       attachedFiles: [],
       selectedTag: "",
-      includeTag: "",
+
+      positivePrompt: "",
+      negativePrompt: "",
+
+      includePositivePrompt: "",
+      includeNegativePrompt: "",
 
       responsed: false,
       responseImg: "",
@@ -107,10 +123,12 @@ export default {
       this.attachedFiles = [];
     },
     async sendImg() {
-      var tag = this.selectedTag + " " + this.includeTag;
+      var positive = this.positivePrompt + " " + this.includePositivePrompt;
+      var negative = this.negativePrompt + " " + this.includeNegativePrompt;
       const param = {
         init_images: [this.ret],
-        prompt: tag,
+        prompt: positive,
+        negative_prompt: negative,
       };
       img2img(
         param,
@@ -135,6 +153,15 @@ export default {
         ctx.drawImage(this, 0, 0);
         this$.ret = canvas.toDataURL("image/png");
       };
+    },
+    changeSelect() {
+      if (this.selectedTag == "") {
+        this.positivePrompt = "";
+        this.negativePrompt = "";
+        return;
+      }
+      this.positivePrompt = this.$store.state.positivePrompt[this.selectedTag];
+      this.negativePrompt = this.$store.state.negativePrompt[this.selectedTag];
     },
   },
 };

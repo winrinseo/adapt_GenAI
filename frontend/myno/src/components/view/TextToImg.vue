@@ -39,7 +39,7 @@
       <div class="col-6" style="height: 100%">
         <div class="card">
           <div class="card-header pb-0"></div>
-          <div class="card-body p-4">
+          <div class="card-body p-4" v-if="responsed">
             <img :src="responseImg" alt="" style="height: 90%; width: 90%" />
           </div>
         </div>
@@ -79,7 +79,6 @@ export default {
         ({ data }) => {
           this.responseImg = "data:image/png;base64," + data.images[0];
           this.responsed = true;
-          // console.log(data.images);
         },
         (error) => {
           console.error(error);

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!--이미지 + canvas-->
     <canvas
       id="canvasImg"
       @mousemove="mouseMove"
@@ -8,6 +9,10 @@
       @mouseleave="stopPainting"
       style="width: 90%; height: 90%"
     >
+    </canvas>
+
+    <!--위 캔버스랑 같이 그려지며 서버로 올라 갈 이미지-->
+    <canvas id="hiddenCanvas" style="width: 90%; height: 90%; display: none">
     </canvas>
   </div>
 </template>
@@ -20,6 +25,10 @@ export default {
       canvas: "",
       ctx: "",
       img: "",
+
+      hiddenCanvas: "",
+      hiddenCtx: "",
+
       painting: false,
       imgWidth: 0,
       imgHeight: 0,
@@ -29,6 +38,8 @@ export default {
     draw(image) {
       this.canvas = document.getElementById("canvasImg");
       this.ctx = this.canvas.getContext("2d");
+      this.hiddenCanvas = document.getElementById("hiddenCanvas");
+      this.hiddenCtx = this.hiddenCanvas.getContext("2d");
 
       var img = document.createElement("img");
       var this$ = this;
@@ -36,12 +47,18 @@ export default {
       img.onload = function () {
         this$.canvas.width = this.naturalWidth;
         this$.canvas.height = this.naturalHeight;
+        this$.hiddenCanvas.width = this.naturalWidth;
+        this$.hiddenCanvas.height = this.naturalHeight;
+
         this$.imgWidth = this.naturalWidth;
         this$.imgHeight = this.naturalHeight;
 
         this$.ctx.strokeStyle = "##000000";
         this$.ctx.lineWidth = 45;
-        // this$.ctx.drawImage(this, 0, 0, this.width, this.height);
+
+        this$.hiddenCtx.strokeStyle = "##000000";
+        this$.hiddenCtx.lineWidth = 45;
+        this$.ctx.drawImage(this, 0, 0, this.width, this.height);
       };
     },
     stopPainting() {
@@ -57,9 +74,16 @@ export default {
       if (!this.painting) {
         this.ctx.beginPath();
         this.ctx.moveTo(x, y);
+
+        //숨겨진 캔버스에도 같은 위치에 그려져야됨
+        this.hiddenCtx.beginPath();
+        this.hiddenCtx.moveTo(x, y);
       } else {
         this.ctx.lineTo(x, y);
         this.ctx.stroke();
+
+        this.hiddenCtx.lineTo(x, y);
+        this.hiddenCtx.stroke();
       }
     },
     startPainting() {
@@ -69,15 +93,33 @@ export default {
       this.stopPainting();
     },
     getBase64Image() {
-      var imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+      var imageData = this.hiddenCtx.getImageData(
+        0,
+        0,
+        this.hiddenCanvas.width,
+        this.hiddenCanvas.height
+      );
       var data = imageData.data;
-      for (var i = 0; i < data.length; i ++) {
-        // console.log(data[i]);
-          if(data[i] === 255) data[i] = 0;
-          else data[i] = 255;
-        }
-      this.ctx.putImageData(imageData, 0, 0, 0, 0, this.canvas.width, this.canvas.height);
-      var dataURL = this.canvas.toDataURL("image/png");
+      for (var i = 0; i < data.length; i += 4) {
+        if (data[i] > 0) data[i] = 0;
+        else data[i] = 255;
+
+        if (data[i + 1] > 0) data[i + 1] = 0;
+        else data[i + 1] = 255;
+
+        if (data[i + 2] > 0) data[i + 2] = 0;
+        else data[i + 2] = 255;
+      }
+      this.hiddenCtx.putImageData(
+        imageData,
+        0,
+        0,
+        0,
+        0,
+        this.hiddenCanvas.width,
+        this.hiddenCanvas.height
+      );
+      var dataURL = this.hiddenCanvas.toDataURL("image/png");
       return dataURL;
     },
   },
