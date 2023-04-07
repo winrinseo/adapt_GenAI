@@ -61,7 +61,7 @@
         <div class="card">
           <div class="card-header pb-0"></div>
           <div class="card-body p-4" v-if="responsed">
-            <img :src="responseImg[0]" alt="" style="height: 90%; width: 90%" />
+            <img :src="responseImg" alt="" style="height: 90%; width: 90%" />
           </div>
         </div>
       </div>
@@ -117,9 +117,8 @@ export default {
       img2img(
         param,
         ({ data }) => {
-          this.responseImg = data.images;
+          this.responseImg = "data:image/png;base64," + data.images[0];
           this.responsed = true;
-          console.log(data.images);
         },
         (error) => {
           console.error(error);

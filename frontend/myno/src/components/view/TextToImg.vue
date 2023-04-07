@@ -29,7 +29,7 @@
               ></textarea>
             </div>
             <div class="btn-showcase" style="margin-top: 10px">
-              <button class="btn btn-primary" @click="generateTag">생성</button>
+              <button class="btn btn-primary" @click="sendTxt">생성</button>
               <button class="btn btn-primary" @click="deleteTag">삭제</button>
             </div>
           </div>
@@ -40,7 +40,7 @@
         <div class="card">
           <div class="card-header pb-0"></div>
           <div class="card-body p-4">
-            <img :src="responseImg[0]" alt="" style="height: 90%; width: 90%" />
+            <img :src="responseImg" alt="" style="height: 90%; width: 90%" />
           </div>
         </div>
       </div>
@@ -56,7 +56,7 @@ export default {
       includeTag: "",
       excludeTag: "",
       responsed: false,
-      responseImg: [],
+      responseImg: "",
     };
   },
   methods: {
@@ -77,8 +77,9 @@ export default {
       txt2img(
         param,
         ({ data }) => {
-          this.responseImg = data.images;
+          this.responseImg = "data:image/png;base64," + data.images[0];
           this.responsed = true;
+          // console.log(data.images);
         },
         (error) => {
           console.error(error);

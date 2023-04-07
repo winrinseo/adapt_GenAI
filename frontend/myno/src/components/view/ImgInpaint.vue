@@ -53,7 +53,9 @@
       <div class="col-6" style="height: 100%">
         <div class="card">
           <div class="card-header pb-0"></div>
-          <div class="card-body p-4"></div>
+          <div class="card-body p-4">
+            <img :src="responseImg" alt="" style="height: 90%; width: 90%" />
+          </div>
         </div>
       </div>
     </div>
@@ -63,6 +65,8 @@
 <script>
 import DropZone from "@/components/UI/DropZone.vue";
 import CanvasImage from "@/components/UI/CanvasImage.vue";
+import { img2img } from "@/api/api";
+
 export default {
   data() {
     return {
@@ -72,6 +76,10 @@ export default {
       attachedFiles: [],
       selectedTag: "",
       includeTag: "",
+
+      responsed: false,
+      responseImg: "",
+      ret: "",
     };
   },
   components: {
@@ -97,8 +105,21 @@ export default {
     },
     sendImg() {
       var tag = this.selectedTag + " " + this.includeTag;
-      tag;
-      console.log(this.$refs.canvasChild.getBase64Image());
+      
+      const param = {
+        init_images: [this.$refs.canvasChild.getBase64Image()],
+        prompt: tag,
+      };
+      img2img(
+        param,
+        ({ data }) => {
+          this.responseImg = "data:image/png;base64," + data.images[0];
+          this.responsed = true;
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
     },
   },
 };
