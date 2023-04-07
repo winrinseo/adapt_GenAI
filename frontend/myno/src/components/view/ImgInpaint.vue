@@ -136,6 +136,7 @@ export default {
         mask: this.$refs.canvasChild.getBase64Image(),
         prompt: positive,
         negative_prompt: negative,
+        inpaint_full_res: false,
       };
       console.log(param);
       img2img(
