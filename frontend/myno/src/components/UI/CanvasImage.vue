@@ -100,15 +100,9 @@ export default {
         this.hiddenCanvas.height
       );
       var data = imageData.data;
-      for (var i = 0; i < data.length; i += 4) {
-        if (data[i] > 0) data[i] = 0;
+      for (var i = 0; i < data.length; i++) {
+        if (data[i] === 255) data[i] = 0;
         else data[i] = 255;
-
-        if (data[i + 1] > 0) data[i + 1] = 0;
-        else data[i + 1] = 255;
-
-        if (data[i + 2] > 0) data[i + 2] = 0;
-        else data[i + 2] = 255;
       }
       this.hiddenCtx.putImageData(
         imageData,
