@@ -83,7 +83,7 @@
 <script>
 import DropZone from "@/components/UI/DropZone.vue";
 import CanvasImage from "@/components/UI/CanvasImage.vue";
-// import { img2img } from "@/api/api";
+import { img2img } from "@/api/api";
 
 export default {
   data() {
