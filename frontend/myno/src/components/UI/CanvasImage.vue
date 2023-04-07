@@ -41,7 +41,7 @@ export default {
 
         this$.ctx.strokeStyle = "##000000";
         this$.ctx.lineWidth = 45;
-        this$.ctx.drawImage(this, 0, 0, this.width, this.height);
+        // this$.ctx.drawImage(this, 0, 0, this.width, this.height);
       };
     },
     stopPainting() {
@@ -69,6 +69,14 @@ export default {
       this.stopPainting();
     },
     getBase64Image() {
+      var imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+      var data = imageData.data;
+      for (var i = 0; i < data.length; i ++) {
+        // console.log(data[i]);
+          if(data[i] === 255) data[i] = 0;
+          else data[i] = 255;
+        }
+      this.ctx.putImageData(imageData, 0, 0, 0, 0, this.canvas.width, this.canvas.height);
       var dataURL = this.canvas.toDataURL("image/png");
       return dataURL;
     },

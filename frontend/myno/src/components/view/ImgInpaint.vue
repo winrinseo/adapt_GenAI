@@ -11,6 +11,7 @@
               @call-parent-upload-img="uploadImg"
             ></drop-zone>
             <div v-else>
+              <img :src="fileList[0]" id="img" alt="" style="height: 90%; width: 90%" />
               <canvas-image :image="image" ref="canvasChild" />
               <div
                 class="dataTables_length"
@@ -96,6 +97,7 @@ export default {
         this.fileList.push(URL.createObjectURL(file));
       });
       this.image = this.attachedFiles[0];
+      this.getBase64Image(this.fileList[0]);
     },
     deleteImg() {
       this.selectImg = false;
@@ -105,14 +107,16 @@ export default {
     },
     sendImg() {
       var tag = this.selectedTag + " " + this.includeTag;
-      
+      console.log(this.$refs.canvasChild.getBase64Image());
       const param = {
-        init_images: [this.$refs.canvasChild.getBase64Image()],
+        init_images: [this.ret],
+        mask:this.$refs.canvasChild.getBase64Image(),
         prompt: tag,
       };
       img2img(
         param,
         ({ data }) => {
+          console.log(data)
           this.responseImg = "data:image/png;base64," + data.images[0];
           this.responsed = true;
         },
@@ -120,6 +124,19 @@ export default {
           console.error(error);
         }
       );
+    },
+    getBase64Image(image) {
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+      var img = document.createElement("img");
+      img.src = image;
+      var this$ = this;
+      img.onload = function () {
+        canvas.width = this.naturalWidth;
+        canvas.height = this.naturalHeight;
+        ctx.drawImage(this, 0, 0);
+        this$.ret = canvas.toDataURL("image/png");
+      };
     },
   },
 };

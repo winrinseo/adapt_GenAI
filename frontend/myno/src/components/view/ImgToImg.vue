@@ -82,7 +82,7 @@ export default {
       includeTag: "",
 
       responsed: false,
-      responseImg: [],
+      responseImg: "",
       ret: "",
     };
   },
@@ -108,8 +108,6 @@ export default {
     },
     async sendImg() {
       var tag = this.selectedTag + " " + this.includeTag;
-
-      console.log(this.ret);
       const param = {
         init_images: [this.ret],
         prompt: tag,
